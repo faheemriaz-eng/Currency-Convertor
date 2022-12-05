@@ -9,8 +9,8 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import okhttp3.MediaType
-import okhttp3.ResponseBody
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
@@ -58,11 +58,9 @@ internal class CurrencyConversionImplTest {
     @Test
     fun `getCurrencies on failure return exception`() = runTest {
         // Given
-        val errorMessage = "This request unfortunately failed please try again"
-        val mockErrorResponse = Response.error<CurrenciesDto>(
-            400,
-            ResponseBody.create(MediaType.get("application/json"), errorMessage)
-        )
+        val errorBody =
+            "{\"description\": \"Invalid App ID provided\"}".toResponseBody("application/json".toMediaTypeOrNull())
+        val mockErrorResponse = Response.error<CurrenciesDto>(401, errorBody)
 
         coEvery { mockService.fetchCurrencies() } returns mockErrorResponse
 
@@ -70,7 +68,7 @@ internal class CurrencyConversionImplTest {
         val actualResult = sut.getCurrencies()
 
         // Then
-        assert(actualResult.isFailure)
+        Assert.assertEquals(actualResult.exceptionOrNull()?.message, "Invalid App ID provided")
 
         // Verify
         coVerify { mockService.fetchCurrencies() }
