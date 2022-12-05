@@ -8,6 +8,8 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
+import okhttp3.MediaType
+import okhttp3.ResponseBody
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
@@ -30,28 +32,44 @@ internal class CurrencyConversionImplTest {
     @Test
     fun `getCurrencies on success return currencies`() = runTest {
         // Given
+        val mockData = mockk<CurrenciesDto> {
+            every { currencies } returns mapOf(
+                Pair("AED", "United Arab Emirates Dirham"),
+                Pair("AFN", "Afghan Afghani"),
+                Pair("ALL", "Albanian Lek")
+            )
+        }
+
         coEvery { mockService.fetchCurrencies() } returns
-                Response.success<CurrenciesDto>(200, mockk {
-                    every { currencies } returns mapOf(
-                        Pair("AED", "United Arab Emirates Dirham"),
-                        Pair("AFN", "Afghan Afghani"),
-                        Pair("ALL", "Albanian Lek")
-                    )
-                })
+                Response.success(200, mockData)
 
         // When
         val actualResult = sut.getCurrencies()
 
         // Then
-        val expectedResult = mapOf(
-            Pair("AED", "United Arab Emirates Dirham"),
-            Pair("AFN", "Afghan Afghani"),
-            Pair("ALL", "Albanian Lek")
+        val expectedResult = Result.success(mockData)
+        Assert.assertEquals(expectedResult, actualResult)
+
+        // Verify
+        coVerify { mockService.fetchCurrencies() }
+    }
+
+    @Test
+    fun `getCurrencies on failure return exception`() = runTest {
+        // Given
+        val errorMessage = "This request unfortunately failed please try again"
+        val mockErrorResponse = Response.error<CurrenciesDto>(
+            400,
+            ResponseBody.create(MediaType.get("application/json"), errorMessage)
         )
-        Assert.assertEquals(
-            expectedResult.entries.first(),
-            actualResult.currencies.entries.first()
-        )
+
+        coEvery { mockService.fetchCurrencies() } returns mockErrorResponse
+
+        // When
+        val actualResult = sut.getCurrencies()
+
+        // Then
+        assert(actualResult.isFailure)
 
         // Verify
         coVerify { mockService.fetchCurrencies() }
