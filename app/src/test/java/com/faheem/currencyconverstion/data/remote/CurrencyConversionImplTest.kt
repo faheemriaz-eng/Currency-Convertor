@@ -1,6 +1,7 @@
 package com.faheem.currencyconverstion.data.remote
 
 import com.faheem.currencyconverstion.data.remote.dtos.CurrenciesDto
+import com.faheem.currencyconverstion.data.remote.dtos.ExchangeRatesDto
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -73,6 +74,28 @@ internal class CurrencyConversionImplTest {
 
         // Verify
         coVerify { mockService.fetchCurrencies() }
+    }
+
+    @Test
+    fun `getExchangeRates on success return rates`() = runTest {
+        // Given
+        val mockData = mockk<ExchangeRatesDto> {
+            every { base } returns "USD"
+            every { rates } returns mapOf(Pair("AED", 3.673), Pair("AFN", 88.500008))
+        }
+
+        coEvery { mockService.fetchExchangeRates() } returns
+                Response.success(200, mockData)
+
+        // When
+        val actualResult = sut.getExchangeRates()
+
+        // Then
+        val expectedResult = Result.success(mockData)
+        Assert.assertEquals(expectedResult, actualResult)
+
+        // Verify
+        coVerify { mockService.fetchExchangeRates() }
     }
 
     @After
