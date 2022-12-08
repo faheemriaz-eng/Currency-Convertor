@@ -22,7 +22,7 @@ internal class CurrencyConversionImplTest {
 
     private lateinit var mockService: CurrencyConversionService
 
-    private lateinit var sut: CurrencyConversion
+    private lateinit var sut: CurrenciesRemoteDataSource
 
     @Before
     fun init() {
