@@ -17,7 +17,7 @@ class CurrenciesLocalDataSourceImpl(private val dao: CurrencyExchangeDao) : Curr
         dao.insertRates(rate)
     }
 
-    override fun getExchangeRates(): ExchangeRateEntity {
+    override fun getExchangeRates(): ExchangeRateEntity? {
         return dao.getRates()
     }
 }

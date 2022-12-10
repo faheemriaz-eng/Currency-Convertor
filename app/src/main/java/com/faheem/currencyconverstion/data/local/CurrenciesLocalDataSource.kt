@@ -7,5 +7,5 @@ interface CurrenciesLocalDataSource {
     suspend fun saveCurrencies(currencyEntity: CurrencyEntity)
     fun getCurrencies(): CurrencyEntity?
     suspend fun saveExchangeRates(rate: ExchangeRateEntity)
-    fun getExchangeRates(): ExchangeRateEntity
+    fun getExchangeRates(): ExchangeRateEntity?
 }

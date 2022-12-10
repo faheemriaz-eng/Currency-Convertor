@@ -30,6 +30,7 @@ class AppDBTest {
     @Test
     fun writeAndReadCurrency() {
         val mockCurrencies = CurrencyEntity(
+            id = 1,
             currencies = mapOf(
                 Pair("AED", "United Arab Emirates Dirham"),
                 Pair("AFN", "Afghan Afghani"),
@@ -41,7 +42,8 @@ class AppDBTest {
             dao.insertCurrencies(mockCurrencies)
         }
         val currencies = dao.getCurrencies()
-        Assert.assertEquals(currencies.currencies["AED"], mockCurrencies.currencies["AED"])
+
+        Assert.assertEquals(mockCurrencies, currencies)
     }
 
     @Test

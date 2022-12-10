@@ -2,6 +2,7 @@ package com.faheem.currencyconverstion.data.local.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.faheem.currencyconverstion.domain.models.Currency
 
 @Entity(tableName = "currency")
 data class CurrencyEntity(
@@ -11,3 +12,9 @@ data class CurrencyEntity(
     val id: Int = 0
 
 )
+
+fun CurrencyEntity?.toDomainList(): List<Currency> {
+    return this?.currencies?.map {
+        Currency(it.key, it.value)
+    } ?: listOf()
+}

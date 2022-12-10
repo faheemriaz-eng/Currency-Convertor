@@ -10,7 +10,7 @@ import com.faheem.currencyconverstion.data.local.entities.ExchangeRateEntity
 @Dao
 interface CurrencyExchangeDao {
     @Query("SELECT * FROM currency")
-    fun getCurrencies(): CurrencyEntity
+    fun getCurrencies(): CurrencyEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCurrencies(currencies: CurrencyEntity)
