@@ -34,10 +34,6 @@ class CurrencyExchangeVM @Inject constructor(private val repository: CurrenciesR
     val rates: LiveData<List<Rate>>
         get() = _rates
 
-    init {
-        fetchCurrenciesAndRates()
-    }
-
     fun fetchCurrenciesAndRates() {
         loadData { currencies, rates ->
             if (currencies.isSuccess && rates.isSuccess)

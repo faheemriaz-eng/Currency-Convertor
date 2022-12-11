@@ -8,12 +8,19 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
+import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.faheem.currencyconverstion.databinding.ActivityExchangeRatesBinding
 import com.faheem.currencyconverstion.domain.models.Currency
 import com.faheem.currencyconverstion.domain.models.Rate
+import com.faheem.currencyconverstion.domain.workmanager.ExchangeRatesWorker
 import com.faheem.currencyconverstion.ui.adapter.RatesAdapter
 import com.faheem.currencyconverstion.ui.utils.observe
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
 class ExchangeRatesActivity : AppCompatActivity() {
@@ -27,10 +34,13 @@ class ExchangeRatesActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityExchangeRatesBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
+        viewModel.fetchCurrenciesAndRates()
+        initPeriodicWorkRequest()
         viewModelObservers()
         initViews()
     }
-    private fun initViews(){
+
+    private fun initViews() {
         initRecyclerView()
         initCurrenciesSpinner()
         initAmountInputField()
@@ -92,5 +102,32 @@ class ExchangeRatesActivity : AppCompatActivity() {
         observe(viewModel.uiState, ::handleUIState)
         observe(viewModel.currencies, ::handleCurrencies)
         observe(viewModel.rates, ::handleRates)
+    }
+
+
+    private fun initPeriodicWorkRequest() {
+        val workManager = WorkManager.getInstance(this)
+
+        val syncRatesWorker = PeriodicWorkRequestBuilder<ExchangeRatesWorker>(
+            WORKER_INTERVAL, TimeUnit.MINUTES
+        ).setConstraints(
+            Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build()
+        )
+            .addTag(WORKER_TAG)
+            .build()
+
+        workManager.enqueueUniquePeriodicWork(
+            WORKER_NAME,
+            ExistingPeriodicWorkPolicy.KEEP,
+            syncRatesWorker
+        )
+    }
+
+    companion object {
+        const val WORKER_INTERVAL = 30L
+        const val WORKER_TAG = "syncRatesWorker"
+        const val WORKER_NAME = "periodicSyncRates"
     }
 }
