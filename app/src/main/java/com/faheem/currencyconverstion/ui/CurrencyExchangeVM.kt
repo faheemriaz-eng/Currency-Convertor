@@ -20,7 +20,8 @@ import javax.inject.Inject
 class CurrencyExchangeVM @Inject constructor(private val repository: CurrenciesRepository) :
     ViewModel() {
     private val _uiState: MutableLiveData<CurrencyExchangeUIState> = MutableLiveData()
-    var uiState: MutableLiveData<CurrencyExchangeUIState> = MutableLiveData()
+    val uiState: LiveData<CurrencyExchangeUIState>
+        get() = _uiState
 
     private var originalExchangeRate: ExchangeRate? = null
     private var selectedCurrencyCode: String? = null

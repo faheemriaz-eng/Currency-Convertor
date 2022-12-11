@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
@@ -27,8 +28,18 @@ class ExchangeRatesActivity : AppCompatActivity() {
         viewBinding = ActivityExchangeRatesBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
         viewModelObservers()
+        initViews()
+    }
+    private fun initViews(){
         initRecyclerView()
         initCurrenciesSpinner()
+        initAmountInputField()
+    }
+
+    private fun initAmountInputField() {
+        viewBinding.etAmount.doAfterTextChanged {
+            viewModel.onAmountChange(it.toString())
+        }
     }
 
     private fun initRecyclerView() {
@@ -37,10 +48,19 @@ class ExchangeRatesActivity : AppCompatActivity() {
     }
 
     private fun initCurrenciesSpinner() {
-        viewBinding.etAmount.doAfterTextChanged {
-            viewModel.onAmountChange(it.toString())
-        }
         viewBinding.currencySpinner.onItemSelectedListener = currenciesSpinnerItemListener
+    }
+
+    private val currenciesSpinnerItemListener = object : AdapterView.OnItemSelectedListener {
+        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            viewModel.onSelectedCurrency(
+                position = position,
+                amount = viewBinding.etAmount.text.toString().toDoubleOrNull() ?: 0.0
+            )
+        }
+
+        override fun onNothingSelected(parent: AdapterView<*>?) = Unit
+
     }
 
     private fun handleCurrencies(currencies: List<Currency>) {
@@ -57,19 +77,19 @@ class ExchangeRatesActivity : AppCompatActivity() {
         adapter.setList(rates)
     }
 
-    private val currenciesSpinnerItemListener = object : AdapterView.OnItemSelectedListener {
-        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-            viewModel.onSelectedCurrency(
-                position = position,
-                amount = viewBinding.etAmount.text.toString().toDoubleOrNull() ?: 0.0
-            )
+    private fun handleUIState(uiState: CurrencyExchangeUIState) {
+        when (uiState) {
+            is CurrencyExchangeUIState.Loading -> viewBinding.progressBar.visibility = View.VISIBLE
+            is CurrencyExchangeUIState.Success -> viewBinding.progressBar.visibility = View.GONE
+            is CurrencyExchangeUIState.Error -> {
+                viewBinding.progressBar.visibility = View.GONE
+                Toast.makeText(this, uiState.message, Toast.LENGTH_SHORT).show()
+            }
         }
-
-        override fun onNothingSelected(parent: AdapterView<*>?) = Unit
-
     }
 
     private fun viewModelObservers() {
+        observe(viewModel.uiState, ::handleUIState)
         observe(viewModel.currencies, ::handleCurrencies)
         observe(viewModel.rates, ::handleRates)
     }
