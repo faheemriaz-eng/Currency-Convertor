@@ -7,8 +7,9 @@ import com.faheem.currencyconverstion.data.remote.CurrenciesRemoteDataSource
 import com.faheem.currencyconverstion.data.remote.dtos.asEntity
 import com.faheem.currencyconverstion.domain.models.Currency
 import com.faheem.currencyconverstion.domain.models.ExchangeRate
+import javax.inject.Inject
 
-class CurrenciesRepository(
+class CurrenciesRepository @Inject constructor(
     private val currenciesRemoteDataSource: CurrenciesRemoteDataSource,
     private val currenciesLocalDataSource: CurrenciesLocalDataSource
 ) {

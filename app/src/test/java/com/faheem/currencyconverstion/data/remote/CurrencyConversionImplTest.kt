@@ -33,13 +33,11 @@ internal class CurrencyConversionImplTest {
     @Test
     fun `getCurrencies on success return currencies`() = runTest {
         // Given
-        val mockData = mockk<CurrenciesDto> {
-            every { currencies } returns mapOf(
+        val mockData = mapOf(
                 Pair("AED", "United Arab Emirates Dirham"),
                 Pair("AFN", "Afghan Afghani"),
                 Pair("ALL", "Albanian Lek")
             )
-        }
 
         coEvery { mockService.fetchCurrencies() } returns
                 Response.success(200, mockData)
@@ -48,7 +46,7 @@ internal class CurrencyConversionImplTest {
         val actualResult = sut.getCurrencies()
 
         // Then
-        val expectedResult = Result.success(mockData)
+        val expectedResult = Result.success(CurrenciesDto(mockData))
         Assert.assertEquals(expectedResult, actualResult)
 
         // Verify
@@ -60,7 +58,7 @@ internal class CurrencyConversionImplTest {
         // Given
         val errorBody =
             "{\"description\": \"Invalid App ID provided\"}".toResponseBody("application/json".toMediaTypeOrNull())
-        val mockErrorResponse = Response.error<CurrenciesDto>(401, errorBody)
+        val mockErrorResponse = Response.error<Map<String,String>>(401, errorBody)
 
         coEvery { mockService.fetchCurrencies() } returns mockErrorResponse
 

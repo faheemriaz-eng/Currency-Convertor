@@ -3,8 +3,10 @@ package com.faheem.currencyconverstion.data.local
 import com.faheem.currencyconverstion.data.local.daos.CurrencyExchangeDao
 import com.faheem.currencyconverstion.data.local.entities.CurrencyEntity
 import com.faheem.currencyconverstion.data.local.entities.ExchangeRateEntity
+import javax.inject.Inject
 
-class CurrenciesLocalDataSourceImpl(private val dao: CurrencyExchangeDao) : CurrenciesLocalDataSource {
+class CurrenciesLocalDataSourceImpl @Inject constructor(private val dao: CurrencyExchangeDao) :
+    CurrenciesLocalDataSource {
     override suspend fun saveCurrencies(currencyEntity: CurrencyEntity) {
         dao.insertCurrencies(currencyEntity)
     }
