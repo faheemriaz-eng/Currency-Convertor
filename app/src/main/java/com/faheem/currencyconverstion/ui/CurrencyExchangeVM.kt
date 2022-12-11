@@ -80,19 +80,25 @@ class CurrencyExchangeVM @Inject constructor(private val repository: CurrenciesR
 
 
     fun convertExchangeRate(selectedCurrencyCode: String, amount: Double) {
-        if (selectedCurrencyCode == originalExchangeRate?.baseCurrencyCode) {
-            _rates.value = originalExchangeRate?.rates?.map {
-                Rate(it.currencyCode, (amount * it.rate).roundUpTo3Decimal())
-            }
-        } else {
-            val baseCurrencyRate =
-                originalExchangeRate?.rates?.find { it.currencyCode == selectedCurrencyCode }
+        if (selectedCurrencyCode == originalExchangeRate?.baseCurrencyCode)
+            convertIfBaseIsUSD(amount)
+        else
+            convertIfBaseIsNonUSD(amount,selectedCurrencyCode)
+    }
 
+    private fun convertIfBaseIsUSD(amount: Double) {
+        _rates.value = originalExchangeRate?.rates?.map {
+            Rate(it.currencyCode, (amount * it.rate).roundUpTo3Decimal())
+        }
+    }
 
-            _rates.value = originalExchangeRate?.rates?.map {
-                val rate = it.rate.div(baseCurrencyRate?.rate ?: 0.0)
-                Rate(it.currencyCode, (amount * rate).roundUpTo3Decimal())
-            }
+    private fun convertIfBaseIsNonUSD(amount: Double, selectedCurrencyCode: String) {
+        val sourceRate =
+            originalExchangeRate?.rates?.find { it.currencyCode == selectedCurrencyCode}
+
+        _rates.value = originalExchangeRate?.rates?.map {
+            val rate = it.rate.div(sourceRate?.rate ?: 0.0)
+            Rate(it.currencyCode, (amount * rate).roundUpTo3Decimal())
         }
     }
 }
