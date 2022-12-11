@@ -8,6 +8,7 @@ import com.faheem.currencyconverstion.domain.models.Currency
 import com.faheem.currencyconverstion.domain.models.ExchangeRate
 import com.faheem.currencyconverstion.domain.models.Rate
 import com.faheem.currencyconverstion.domain.repository.CurrenciesRepository
+import com.faheem.currencyconverstion.ui.utils.roundUpTo3Decimal
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -20,6 +21,8 @@ class CurrencyExchangeVM @Inject constructor(private val repository: CurrenciesR
     ViewModel() {
     private val _uiState: MutableLiveData<CurrencyExchangeUIState> = MutableLiveData()
     var uiState: MutableLiveData<CurrencyExchangeUIState> = MutableLiveData()
+
+    private var originalExchangeRate: ExchangeRate? = null
 
     private val _currencies: MutableLiveData<List<Currency>> = MutableLiveData()
     val currencies: LiveData<List<Currency>>
@@ -40,6 +43,7 @@ class CurrencyExchangeVM @Inject constructor(private val repository: CurrenciesR
                 _uiState.value = CurrencyExchangeUIState.Error(it.message ?: "Something went wrong")
             }
             rates.onSuccess {
+                originalExchangeRate = it
                 _rates.value = it?.rates
             }.onFailure {
                 _uiState.value = CurrencyExchangeUIState.Error(it.message ?: "Something went wrong")
@@ -55,6 +59,23 @@ class CurrencyExchangeVM @Inject constructor(private val repository: CurrenciesR
 
             withContext(Dispatchers.Main) {
                 result(defCurrencies.await(), defRates.await())
+            }
+        }
+    }
+
+    fun convertExchangeRate(selectedCurrencyCode: String, amount: Double) {
+        if (selectedCurrencyCode == originalExchangeRate?.baseCurrencyCode) {
+            _rates.value = originalExchangeRate?.rates?.map {
+                Rate(it.currencyCode, (amount * it.rate).roundUpTo3Decimal())
+            }
+        } else {
+            val baseCurrencyRate =
+                originalExchangeRate?.rates?.find { it.currencyCode == selectedCurrencyCode }
+
+
+            _rates.value = originalExchangeRate?.rates?.map {
+                val rate = it.rate.div(baseCurrencyRate?.rate ?: 0.0)
+                Rate(it.currencyCode, (amount * rate).roundUpTo3Decimal())
             }
         }
     }

@@ -6,10 +6,10 @@ import com.faheem.currencyconverstion.domain.models.ExchangeRate
 import com.faheem.currencyconverstion.domain.models.Rate
 import com.faheem.currencyconverstion.domain.repository.CurrenciesRepository
 import com.faheem.currencyconverstion.testutils.getOrAwaitValue
+import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
-import io.mockk.verify
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -67,10 +67,58 @@ class CurrencyExchangeVMTest {
         }
     }
 
+    @Test
+    fun `test convert exchangeRate if selected currency is USD`() = runTest {
+        // Given
+        val baseCurrency = "USD"
+        val sourceCurrency = "USD"
+        val enteredAmount = 15.00
+        val rates = listOf(Rate("AED", 3.673), Rate("PKR", 224.86))
+        coEvery { mockRepository.loadCurrencies() } returns Result.success(mockk())
+        coEvery { mockRepository.loadExchangeRates() } returns Result.success(
+            ExchangeRate(baseCurrencyCode = baseCurrency, rates = rates)
+        )
+
+        // When
+        sut.fetchCurrenciesAndRates()
+        sut.rates.getOrAwaitValue()
+        sut.convertExchangeRate(sourceCurrency, enteredAmount)
+
+        val expectedRates = listOf(Rate("AED", 55.095), Rate("PKR", 3372.9))
+
+        // Then
+        Assert.assertEquals(expectedRates, sut.rates.getOrAwaitValue())
+    }
+
+    @Test
+    fun `test convert exchangeRate if selected currency is PKR`() = runTest {
+        // Given
+        val baseCurrency = "USD"
+        val sourceCurrency = "PKR"
+        val enteredAmount = 15.00
+        val rates = listOf(Rate("AED", 3.673), Rate("PKR", 224.86))
+        coEvery { mockRepository.loadCurrencies() } returns Result.success(mockk())
+        coEvery { mockRepository.loadExchangeRates() } returns Result.success(
+            ExchangeRate(baseCurrencyCode = baseCurrency, rates = rates)
+        )
+
+        // When
+        sut.fetchCurrenciesAndRates()
+        sut.rates.getOrAwaitValue()
+        sut.convertExchangeRate(sourceCurrency, enteredAmount)
+
+        val expectedRates = listOf(Rate("AED", 0.245), Rate("PKR", 15.0))
+
+        // Then
+        Assert.assertEquals(expectedRates, sut.rates.getOrAwaitValue())
+    }
+
+
     @After
     fun tearDown() {
         Dispatchers.resetMain() // reset the main dispatcher to the original Main dispatcher
         mainThreadSurrogate.close()
+        clearAllMocks()
     }
 
 }
