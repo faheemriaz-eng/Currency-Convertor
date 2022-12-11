@@ -23,6 +23,7 @@ class CurrencyExchangeVM @Inject constructor(private val repository: CurrenciesR
     var uiState: MutableLiveData<CurrencyExchangeUIState> = MutableLiveData()
 
     private var originalExchangeRate: ExchangeRate? = null
+    private var selectedCurrencyCode: String? = null
 
     private val _currencies: MutableLiveData<List<Currency>> = MutableLiveData()
     val currencies: LiveData<List<Currency>>
@@ -31,6 +32,10 @@ class CurrencyExchangeVM @Inject constructor(private val repository: CurrenciesR
     private val _rates: MutableLiveData<List<Rate>> = MutableLiveData()
     val rates: LiveData<List<Rate>>
         get() = _rates
+
+    init {
+        fetchCurrenciesAndRates()
+    }
 
     fun fetchCurrenciesAndRates() {
         loadData { currencies, rates ->
@@ -62,6 +67,20 @@ class CurrencyExchangeVM @Inject constructor(private val repository: CurrenciesR
             }
         }
     }
+
+    fun onAmountChange(amount: String) {
+        selectedCurrencyCode?.let {
+            convertExchangeRate(it, amount.toDoubleOrNull() ?: 0.0)
+        }
+    }
+
+    fun onSelectedCurrency(position: Int, amount: Double) {
+        selectedCurrencyCode = _currencies.value?.get(position)?.currencyCode
+        selectedCurrencyCode?.let {
+            convertExchangeRate(it, amount)
+        }
+    }
+
 
     fun convertExchangeRate(selectedCurrencyCode: String, amount: Double) {
         if (selectedCurrencyCode == originalExchangeRate?.baseCurrencyCode) {
