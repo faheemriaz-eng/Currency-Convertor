@@ -21,6 +21,7 @@ import com.faheem.currencyconverstion.ui.adapter.RatesAdapter
 import com.faheem.currencyconverstion.ui.utils.observe
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ExchangeRatesActivity : AppCompatActivity() {
@@ -28,6 +29,7 @@ class ExchangeRatesActivity : AppCompatActivity() {
 
     private val viewModel: CurrencyExchangeVM by viewModels()
 
+    @Inject
     lateinit var adapter: RatesAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,7 +55,6 @@ class ExchangeRatesActivity : AppCompatActivity() {
     }
 
     private fun initRecyclerView() {
-        adapter = RatesAdapter()
         viewBinding.rvRates.adapter = adapter
     }
 

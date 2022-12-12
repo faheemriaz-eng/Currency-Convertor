@@ -6,8 +6,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.faheem.currencyconverstion.databinding.LayoutItemExchangeRateBinding
 import com.faheem.currencyconverstion.domain.models.Rate
+import javax.inject.Inject
 
-class RatesAdapter : RecyclerView.Adapter<RatesViewHolder>() {
+class RatesAdapter @Inject constructor() : RecyclerView.Adapter<RatesViewHolder>() {
 
     private var list: MutableList<Rate> = mutableListOf()
 
