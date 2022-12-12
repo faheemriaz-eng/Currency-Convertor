@@ -20,19 +20,16 @@ import javax.inject.Inject
 class CurrencyExchangeVM @Inject constructor(private val repository: CurrenciesRepository) :
     ViewModel() {
     private val _uiState: MutableLiveData<CurrencyExchangeUIState> = MutableLiveData()
-    val uiState: LiveData<CurrencyExchangeUIState>
-        get() = _uiState
+    val uiState: LiveData<CurrencyExchangeUIState> = _uiState
 
     private var originalExchangeRate: ExchangeRate? = null
     private var selectedCurrencyCode: String? = null
 
     private val _currencies: MutableLiveData<List<Currency>> = MutableLiveData()
-    val currencies: LiveData<List<Currency>>
-        get() = _currencies
+    val currencies: LiveData<List<Currency>> = _currencies
 
     private val _rates: MutableLiveData<List<Rate>> = MutableLiveData()
-    val rates: LiveData<List<Rate>>
-        get() = _rates
+    val rates: LiveData<List<Rate>> = _rates
 
     fun fetchCurrenciesAndRates() {
         loadData { currencies, rates ->
@@ -90,18 +87,18 @@ class CurrencyExchangeVM @Inject constructor(private val repository: CurrenciesR
 
     fun convertExchangeRate(selectedCurrencyCode: String, amount: Double) {
         if (selectedCurrencyCode == originalExchangeRate?.baseCurrencyCode)
-            convertIfBaseIsUSD(amount)
+            convertIfSourceIsUSD(amount)
         else
-            convertIfBaseIsNonUSD(amount, selectedCurrencyCode)
+            convertIfSourceIsNonUSD(amount, selectedCurrencyCode)
     }
 
-    private fun convertIfBaseIsUSD(amount: Double) {
+    private fun convertIfSourceIsUSD(amount: Double) {
         _rates.value = originalExchangeRate?.rates?.map {
             Rate(it.currencyCode, (amount * it.rate).roundUpTo3Decimal())
         }
     }
 
-    private fun convertIfBaseIsNonUSD(amount: Double, selectedCurrencyCode: String) {
+    private fun convertIfSourceIsNonUSD(amount: Double, selectedCurrencyCode: String) {
         val sourceRate =
             originalExchangeRate?.rates?.find { it.currencyCode == selectedCurrencyCode }
 
