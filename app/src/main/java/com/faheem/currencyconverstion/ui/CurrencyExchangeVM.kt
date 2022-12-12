@@ -85,6 +85,8 @@ class CurrencyExchangeVM @Inject constructor(private val repository: CurrenciesR
         }
     }
 
+    fun formattedCurrencies(currencies: List<Currency>): List<String> =
+        currencies.map { currency -> currency.currencyCode + " : " + currency.currencyName }
 
     fun convertExchangeRate(selectedCurrencyCode: String, amount: Double) {
         if (selectedCurrencyCode == originalExchangeRate?.baseCurrencyCode)

@@ -78,7 +78,7 @@ class ExchangeRatesActivity : AppCompatActivity() {
         val dataAdapter: ArrayAdapter<String> = ArrayAdapter(
             this,
             android.R.layout.simple_spinner_item,
-            currencies.map { currency -> currency.currencyCode + " : " + currency.currencyName } as ArrayList<String>
+            viewModel.formattedCurrencies(currencies)
         )
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         viewBinding.currencySpinner.adapter = dataAdapter
