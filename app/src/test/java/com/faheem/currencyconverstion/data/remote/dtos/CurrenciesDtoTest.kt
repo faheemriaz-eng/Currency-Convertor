@@ -12,16 +12,16 @@ internal class CurrenciesDtoTest {
     fun `test currencies json response maps to model class`() {
         val response = getCurrenciesJson()
 
-        Assert.assertEquals(170, response.currencies.entries.size)
+        Assert.assertEquals(170, response.currencies?.entries?.size)
 
         Assert.assertEquals(
             "United Arab Emirates Dirham",
-            response.currencies["AED"]
+            response.currencies?.get("AED")
         )
 
         Assert.assertEquals(
             "Zimbabwean Dollar",
-            response.currencies["ZWL"]
+            response.currencies?.get("ZWL")
         )
     }
 

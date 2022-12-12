@@ -48,17 +48,17 @@ class CurrencyExchangeVMTest {
     fun `test fetchCurrenciesAndRates should return currencies and rates`() = runTest {
         // Given
         val currencies = listOf(Currency("AED", "United Arab Emirates Dirham"))
-        val rates = listOf(Rate("AED", 3.673))
         coEvery { mockRepository.loadCurrencies() } returns Result.success(currencies)
         coEvery { mockRepository.loadExchangeRates() } returns Result.success(
-            ExchangeRate(baseCurrencyCode = "USD", rates = rates)
+            ExchangeRate(baseCurrencyCode = "USD", rates = generateExchangeRates())
         )
         //When
         sut.fetchCurrenciesAndRates()
+        val expectedResult = generateExchangeRates()
 
         //Then
         Assert.assertEquals(currencies, sut.currencies.getOrAwaitValue())
-        Assert.assertEquals(rates, sut.rates.getOrAwaitValue())
+        Assert.assertEquals(expectedResult, sut.rates.getOrAwaitValue())
 
         // Verify
         coVerify {
@@ -73,10 +73,9 @@ class CurrencyExchangeVMTest {
         val baseCurrency = "USD"
         val sourceCurrency = "USD"
         val enteredAmount = 15.00
-        val rates = listOf(Rate("AED", 3.673), Rate("PKR", 224.86))
         coEvery { mockRepository.loadCurrencies() } returns Result.success(mockk())
         coEvery { mockRepository.loadExchangeRates() } returns Result.success(
-            ExchangeRate(baseCurrencyCode = baseCurrency, rates = rates)
+            ExchangeRate(baseCurrencyCode = baseCurrency, rates = generateExchangeRates())
         )
 
         // When
@@ -96,10 +95,9 @@ class CurrencyExchangeVMTest {
         val baseCurrency = "USD"
         val sourceCurrency = "PKR"
         val enteredAmount = 15.00
-        val rates = listOf(Rate("AED", 3.673), Rate("PKR", 224.86))
         coEvery { mockRepository.loadCurrencies() } returns Result.success(mockk())
         coEvery { mockRepository.loadExchangeRates() } returns Result.success(
-            ExchangeRate(baseCurrencyCode = baseCurrency, rates = rates)
+            ExchangeRate(baseCurrencyCode = baseCurrency, rates = generateExchangeRates())
         )
 
         // When
@@ -119,6 +117,10 @@ class CurrencyExchangeVMTest {
         Dispatchers.resetMain() // reset the main dispatcher to the original Main dispatcher
         mainThreadSurrogate.close()
         clearAllMocks()
+    }
+
+    companion object {
+        fun generateExchangeRates() = listOf(Rate("AED", 3.673), Rate("PKR", 224.86))
     }
 
 }
