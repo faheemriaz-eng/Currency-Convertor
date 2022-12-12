@@ -38,18 +38,25 @@ class CurrencyExchangeVM @Inject constructor(private val repository: CurrenciesR
         loadData { currencies, rates ->
             if (currencies.isSuccess && rates.isSuccess)
                 _uiState.value = CurrencyExchangeUIState.Success
+            handleCurrenciesResult(currencies)
+            handleRatesResult(rates)
+        }
+    }
 
-            currencies.onSuccess {
-                _currencies.value = it
-            }.onFailure {
-                _uiState.value = CurrencyExchangeUIState.Error(it.message ?: "Something went wrong")
-            }
-            rates.onSuccess {
-                originalExchangeRate = it
-                _rates.value = it?.rates
-            }.onFailure {
-                _uiState.value = CurrencyExchangeUIState.Error(it.message ?: "Something went wrong")
-            }
+    private fun handleCurrenciesResult(currencies: Result<List<Currency>>) {
+        currencies.onSuccess {
+            _currencies.value = it
+        }.onFailure {
+            _uiState.value = CurrencyExchangeUIState.Error(it.message ?: "Something went wrong")
+        }
+    }
+
+    private fun handleRatesResult(rates: Result<ExchangeRate?>) {
+        rates.onSuccess {
+            originalExchangeRate = it
+            _rates.value = it?.rates
+        }.onFailure {
+            _uiState.value = CurrencyExchangeUIState.Error(it.message ?: "Something went wrong")
         }
     }
 
@@ -83,7 +90,7 @@ class CurrencyExchangeVM @Inject constructor(private val repository: CurrenciesR
         if (selectedCurrencyCode == originalExchangeRate?.baseCurrencyCode)
             convertIfBaseIsUSD(amount)
         else
-            convertIfBaseIsNonUSD(amount,selectedCurrencyCode)
+            convertIfBaseIsNonUSD(amount, selectedCurrencyCode)
     }
 
     private fun convertIfBaseIsUSD(amount: Double) {
@@ -94,7 +101,7 @@ class CurrencyExchangeVM @Inject constructor(private val repository: CurrenciesR
 
     private fun convertIfBaseIsNonUSD(amount: Double, selectedCurrencyCode: String) {
         val sourceRate =
-            originalExchangeRate?.rates?.find { it.currencyCode == selectedCurrencyCode}
+            originalExchangeRate?.rates?.find { it.currencyCode == selectedCurrencyCode }
 
         _rates.value = originalExchangeRate?.rates?.map {
             val rate = it.rate.div(sourceRate?.rate ?: 0.0)

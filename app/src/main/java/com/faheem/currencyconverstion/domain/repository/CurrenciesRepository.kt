@@ -27,34 +27,23 @@ class CurrenciesRepository @Inject constructor(
         } ?: return getExchangeRate()
     }
 
-
     private suspend fun getCurrencies(): Result<List<Currency>> {
         val networkResult = currenciesRemoteDataSource.getCurrencies()
         return if (networkResult.isSuccess) {
-            networkResult.getOrNull()?.let {
-                currenciesLocalDataSource.saveCurrencies(it.asEntity())
-                Result.success(currenciesLocalDataSource.getCurrencies().toDomainList())
-            } ?:  Result.success(listOf())
-
+            currenciesLocalDataSource.saveCurrencies(networkResult.getOrNull()!!.asEntity())
+            Result.success(currenciesLocalDataSource.getCurrencies().toDomainList())
         } else {
-            networkResult.exceptionOrNull()?.let {
-                Result.failure(it)
-            } ?: Result.failure(Exception("Something went wrong"))
+            Result.failure(networkResult.exceptionOrNull()!!)
         }
     }
 
     private suspend fun getExchangeRate(): Result<ExchangeRate?> {
         val networkResult = currenciesRemoteDataSource.getExchangeRates()
         return if (networkResult.isSuccess) {
-            networkResult.getOrNull()?.let {
-                currenciesLocalDataSource.saveExchangeRates(it.asEntity())
-                Result.success(currenciesLocalDataSource.getExchangeRates().toDomainModel())
-            } ?:  Result.success(null)
-
+            currenciesLocalDataSource.saveExchangeRates(networkResult.getOrNull()!!.asEntity())
+            Result.success(currenciesLocalDataSource.getExchangeRates().toDomainModel())
         } else {
-            networkResult.exceptionOrNull()?.let {
-                Result.failure(it)
-            } ?: Result.failure(Exception("Something went wrong"))
+            Result.failure(networkResult.exceptionOrNull()!!)
         }
     }
 }

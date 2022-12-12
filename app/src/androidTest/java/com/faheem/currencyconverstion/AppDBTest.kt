@@ -59,10 +59,7 @@ class AppDBTest {
         }
         val currencies = dao.getRates()
 
-        Assert.assertEquals(
-            currencies.rates["AED"],
-            mockRates.rates["AED"]
-        )
+        Assert.assertEquals(currencies, mockRates)
     }
 
     @After
