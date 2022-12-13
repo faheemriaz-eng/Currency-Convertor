@@ -33,7 +33,6 @@ class CurrencyExchangeVMTest {
     @OptIn(DelicateCoroutinesApi::class)
     private val mainThreadSurrogate = newSingleThreadContext("UI thread")
 
-
     private lateinit var mockRepository: CurrenciesRepository
 
     private lateinit var sut: CurrencyExchangeVM
@@ -69,6 +68,76 @@ class CurrencyExchangeVMTest {
             mockRepository.loadExchangeRates()
         }
     }
+
+    @Test
+    fun `test fetchCurrenciesAndRates if currencies failed should return empty list of currencies`() =
+        runTest {
+            // Given
+            coEvery { mockRepository.loadCurrencies() } returns Result.failure(Exception("Something went wrong"))
+            coEvery { mockRepository.loadExchangeRates() } returns Result.success(
+                ExchangeRate(baseCurrencyCode = "USD", rates = generateExchangeRates())
+            )
+            //When
+
+            // Trigger an update, which starts a coroutine that updates the value
+            sut.fetchCurrenciesAndRates()
+
+            //Then
+            Assert.assertEquals(true, sut.currencies.getOrAwaitValue().isEmpty())
+            Assert.assertEquals(true, sut.rates.getOrAwaitValue().isNotEmpty())
+
+            // Verify
+            coVerify {
+                mockRepository.loadCurrencies()
+                mockRepository.loadExchangeRates()
+            }
+        }
+
+    @Test
+    fun `test fetchCurrenciesAndRates if rates failed should return empty list of rates`() =
+        runTest {
+            // Given
+
+            coEvery { mockRepository.loadCurrencies() } returns Result.success(listOf(Currency("PKR","Pakistani")))
+            coEvery { mockRepository.loadExchangeRates() } returns Result.failure(Exception("Something went wrong"))
+
+            //When
+
+            // Trigger an update, which starts a coroutine that updates the value
+            sut.fetchCurrenciesAndRates()
+
+            //Then
+            Assert.assertEquals(true, sut.rates.getOrAwaitValue().isEmpty())
+            Assert.assertEquals(true, sut.currencies.getOrAwaitValue().isNotEmpty())
+
+            // Verify
+            coVerify {
+                mockRepository.loadCurrencies()
+                mockRepository.loadExchangeRates()
+            }
+        }
+
+    @Test
+    fun `test fetchCurrenciesAndRates failed should return empty lists of rates and currencies`() =
+        runTest {
+            // Given
+            coEvery { mockRepository.loadCurrencies() } returns Result.failure(Exception("Something went wrong"))
+            coEvery { mockRepository.loadExchangeRates() } returns Result.failure(Exception("Something went wrong"))
+            //When
+
+            // Trigger an update, which starts a coroutine that updates the value
+            sut.fetchCurrenciesAndRates()
+
+            //Then
+            Assert.assertEquals(true, sut.currencies.getOrAwaitValue().isEmpty())
+            Assert.assertEquals(true, sut.rates.getOrAwaitValue().isEmpty())
+
+            // Verify
+            coVerify {
+                mockRepository.loadCurrencies()
+                mockRepository.loadExchangeRates()
+            }
+        }
 
     @Test
     fun `test convert exchangeRate if selected currency is USD`() = runTest {

@@ -44,6 +44,7 @@ class CurrencyExchangeVM @Inject constructor(private val repository: CurrenciesR
         currencies.onSuccess {
             _currencies.value = it
         }.onFailure {
+            _currencies.value = listOf()
             _uiState.value = CurrencyExchangeUIState.Error(it.message ?: "Something went wrong")
         }
     }
@@ -53,6 +54,7 @@ class CurrencyExchangeVM @Inject constructor(private val repository: CurrenciesR
             originalExchangeRate = it
             _rates.value = it?.rates
         }.onFailure {
+            _rates.value = listOf()
             _uiState.value = CurrencyExchangeUIState.Error(it.message ?: "Something went wrong")
         }
     }
