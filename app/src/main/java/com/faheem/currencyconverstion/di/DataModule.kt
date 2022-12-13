@@ -4,6 +4,8 @@ import com.faheem.currencyconverstion.data.local.CurrenciesLocalDataSource
 import com.faheem.currencyconverstion.data.local.CurrenciesLocalDataSourceImpl
 import com.faheem.currencyconverstion.data.remote.CurrenciesRemoteDataSource
 import com.faheem.currencyconverstion.data.remote.CurrencyConversionImpl
+import com.faheem.currencyconverstion.domain.repository.CurrenciesRepository
+import com.faheem.currencyconverstion.domain.repository.CurrenciesRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -21,5 +23,10 @@ abstract class DataModule {
     @Binds
     @Singleton
     abstract fun provideCurrenciesLocalDataSource(localSource: CurrenciesLocalDataSourceImpl): CurrenciesLocalDataSource
+
+    @Binds
+    @Singleton
+    abstract fun provideCurrenciesRepository(repository: CurrenciesRepositoryImpl): CurrenciesRepository
+
 
 }

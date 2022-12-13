@@ -5,6 +5,7 @@ import com.faheem.currencyconverstion.domain.models.Currency
 import com.faheem.currencyconverstion.domain.models.ExchangeRate
 import com.faheem.currencyconverstion.domain.models.Rate
 import com.faheem.currencyconverstion.domain.repository.CurrenciesRepository
+import com.faheem.currencyconverstion.domain.repository.CurrenciesRepositoryImpl
 import com.faheem.currencyconverstion.testutils.getOrAwaitValue
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
@@ -39,7 +40,7 @@ class CurrencyExchangeVMTest {
 
     @Before
     fun init() {
-        mockRepository = mockk()
+        mockRepository = mockk<CurrenciesRepositoryImpl>()
         sut = CurrencyExchangeVM(mockRepository)
         Dispatchers.setMain(mainThreadSurrogate)
     }
@@ -98,7 +99,14 @@ class CurrencyExchangeVMTest {
         runTest {
             // Given
 
-            coEvery { mockRepository.loadCurrencies() } returns Result.success(listOf(Currency("PKR","Pakistani")))
+            coEvery { mockRepository.loadCurrencies() } returns Result.success(
+                listOf(
+                    Currency(
+                        "PKR",
+                        "Pakistani"
+                    )
+                )
+            )
             coEvery { mockRepository.loadExchangeRates() } returns Result.failure(Exception("Something went wrong"))
 
             //When
@@ -193,7 +201,7 @@ class CurrencyExchangeVMTest {
 
         // Then
 
-        val expectedValueAfterConversion =  listOf(Rate("AED", 0.245), Rate("PKR", 15.0))
+        val expectedValueAfterConversion = listOf(Rate("AED", 0.245), Rate("PKR", 15.0))
         // Get the new value
         val valueAfterConversion = sut.rates.getOrAwaitValue()
 

@@ -32,7 +32,7 @@ class CurrenciesRepositoryTest {
     fun init() {
         mockLocalDataSource = mockk()
         mockRemoteDataSource = mockk()
-        sut = CurrenciesRepository(mockRemoteDataSource, mockLocalDataSource)
+        sut = CurrenciesRepositoryImpl(mockRemoteDataSource, mockLocalDataSource)
     }
 
 
