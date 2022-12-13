@@ -19,6 +19,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert
+import org.junit.Assert.assertNotEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -53,6 +54,8 @@ class CurrencyExchangeVMTest {
             ExchangeRate(baseCurrencyCode = "USD", rates = generateExchangeRates())
         )
         //When
+
+        // Trigger an update, which starts a coroutine that updates the value
         sut.fetchCurrenciesAndRates()
         val expectedResult = generateExchangeRates()
 
@@ -79,14 +82,23 @@ class CurrencyExchangeVMTest {
         )
 
         // When
+
+        // Trigger an update, which starts a coroutine that updates the value
         sut.fetchCurrenciesAndRates()
-        sut.rates.getOrAwaitValue()
+        // Get the initial value that comes directly from Mock Data Source
+        val initialValue = sut.rates.getOrAwaitValue()
+
         sut.convertExchangeRate(sourceCurrency, enteredAmount)
 
-        val expectedRates = listOf(Rate("AED", 55.095), Rate("PKR", 3372.9))
-
         // Then
-        Assert.assertEquals(expectedRates, sut.rates.getOrAwaitValue())
+
+        // Get the new value
+        val valueAfterConversion = sut.rates.getOrAwaitValue()
+
+        val expectedValue = listOf(Rate("AED", 55.095), Rate("PKR", 3372.9))
+
+        assertNotEquals(initialValue, valueAfterConversion)
+        Assert.assertEquals(expectedValue, valueAfterConversion)
     }
 
     @Test
@@ -101,14 +113,24 @@ class CurrencyExchangeVMTest {
         )
 
         // When
+
+        // Trigger an update, which starts a coroutine that updates the value
         sut.fetchCurrenciesAndRates()
-        sut.rates.getOrAwaitValue()
+
+        // Get the initial value that comes directly from Mock Data Source
+        val initialValue = sut.rates.getOrAwaitValue()
+
         sut.convertExchangeRate(sourceCurrency, enteredAmount)
 
-        val expectedRates = listOf(Rate("AED", 0.245), Rate("PKR", 15.0))
-
         // Then
-        Assert.assertEquals(expectedRates, sut.rates.getOrAwaitValue())
+
+        val expectedValueAfterConversion =  listOf(Rate("AED", 0.245), Rate("PKR", 15.0))
+        // Get the new value
+        val valueAfterConversion = sut.rates.getOrAwaitValue()
+
+        assertNotEquals(initialValue, valueAfterConversion)
+        Assert.assertEquals(expectedValueAfterConversion, valueAfterConversion)
+
     }
 
 
