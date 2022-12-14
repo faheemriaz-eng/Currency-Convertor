@@ -9,8 +9,9 @@ open class BaseApi {
     suspend fun <T> executeApi(call: suspend () -> Response<T>): Result<T> {
         try {
             val response = call.invoke()
-            if (response.isSuccessful)
+            if (response.isSuccessful && response.body() != null) {
                 return Result.success(response.body()!!)
+            }
 
             return Result.failure(Exception(parseError(response)))
 

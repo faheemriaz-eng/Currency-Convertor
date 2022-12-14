@@ -1,12 +1,12 @@
-package com.faheem.currencyconverstion.domain.repository
+package com.faheem.currencyconverstion.data.repositories
 
 import com.faheem.currencyconverstion.data.local.CurrenciesLocalDataSource
 import com.faheem.currencyconverstion.data.local.entities.toDomainList
 import com.faheem.currencyconverstion.data.local.entities.toDomainModel
+import com.faheem.currencyconverstion.data.models.Currency
+import com.faheem.currencyconverstion.data.models.ExchangeRate
 import com.faheem.currencyconverstion.data.remote.CurrenciesRemoteDataSource
 import com.faheem.currencyconverstion.data.remote.dtos.asEntity
-import com.faheem.currencyconverstion.domain.models.Currency
-import com.faheem.currencyconverstion.domain.models.ExchangeRate
 import javax.inject.Inject
 
 class CurrenciesRepositoryImpl @Inject constructor(

@@ -1,15 +1,17 @@
-package com.faheem.currencyconverstion.domain.repository
+package com.faheem.currencyconverstion.data
 
 import com.faheem.currencyconverstion.data.local.CurrenciesLocalDataSource
 import com.faheem.currencyconverstion.data.local.entities.CurrencyEntity
 import com.faheem.currencyconverstion.data.local.entities.ExchangeRateEntity
+import com.faheem.currencyconverstion.data.models.Currency
+import com.faheem.currencyconverstion.data.models.ExchangeRate
+import com.faheem.currencyconverstion.data.models.Rate
 import com.faheem.currencyconverstion.data.remote.CurrenciesRemoteDataSource
 import com.faheem.currencyconverstion.data.remote.dtos.CurrenciesDto
 import com.faheem.currencyconverstion.data.remote.dtos.ExchangeRatesDto
 import com.faheem.currencyconverstion.data.remote.dtos.asEntity
-import com.faheem.currencyconverstion.domain.models.Currency
-import com.faheem.currencyconverstion.domain.models.ExchangeRate
-import com.faheem.currencyconverstion.domain.models.Rate
+import com.faheem.currencyconverstion.data.repositories.CurrenciesRepository
+import com.faheem.currencyconverstion.data.repositories.CurrenciesRepositoryImpl
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify

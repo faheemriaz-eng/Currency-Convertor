@@ -1,12 +1,13 @@
 package com.faheem.currencyconverstion.ui
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.faheem.currencyconverstion.domain.models.Currency
-import com.faheem.currencyconverstion.domain.models.ExchangeRate
-import com.faheem.currencyconverstion.domain.models.Rate
-import com.faheem.currencyconverstion.domain.repository.CurrenciesRepository
-import com.faheem.currencyconverstion.domain.repository.CurrenciesRepositoryImpl
+import com.faheem.currencyconverstion.data.models.Currency
+import com.faheem.currencyconverstion.data.models.ExchangeRate
+import com.faheem.currencyconverstion.data.models.Rate
+import com.faheem.currencyconverstion.data.repositories.CurrenciesRepository
+import com.faheem.currencyconverstion.data.repositories.CurrenciesRepositoryImpl
 import com.faheem.currencyconverstion.testutils.getOrAwaitValue
+import com.faheem.currencyconverstion.ui.screens.currencies.CurrencyExchangeVM
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify

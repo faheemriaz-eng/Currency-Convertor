@@ -1,4 +1,4 @@
-package com.faheem.currencyconverstion.domain.workmanager
+package com.faheem.currencyconverstion.ui.workmanager
 
 import android.content.Context
 import androidx.hilt.work.HiltWorker

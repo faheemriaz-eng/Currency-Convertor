@@ -17,7 +17,7 @@
         android:theme="@style/Theme.CurrencyConversion"
         tools:targetApi="31">
         <activity
-            android:name=".ui.ExchangeRatesActivity"
+            android:name=".ui.screens.currencies.ExchangeRatesActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -2,7 +2,7 @@ package com.faheem.currencyconverstion.data.local.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.faheem.currencyconverstion.domain.models.Currency
+import com.faheem.currencyconverstion.data.models.Currency
 
 @Entity(tableName = "currency")
 data class CurrencyEntity(

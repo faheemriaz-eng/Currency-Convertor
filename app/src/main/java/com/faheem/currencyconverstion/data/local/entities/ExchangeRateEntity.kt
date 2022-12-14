@@ -2,8 +2,8 @@ package com.faheem.currencyconverstion.data.local.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.faheem.currencyconverstion.domain.models.ExchangeRate
-import com.faheem.currencyconverstion.domain.models.Rate
+import com.faheem.currencyconverstion.data.models.ExchangeRate
+import com.faheem.currencyconverstion.data.models.Rate
 
 @Entity(tableName = "exchange_rate")
 data class ExchangeRateEntity(

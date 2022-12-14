@@ -1,4 +1,4 @@
-package com.faheem.currencyconverstion.data.client
+package com.faheem.currencyconverstion.data.remote.client
 
 import com.faheem.currencyconverstion.BuildConfig
 import okhttp3.Interceptor

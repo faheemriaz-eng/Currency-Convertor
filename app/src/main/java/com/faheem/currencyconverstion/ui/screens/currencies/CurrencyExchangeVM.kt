@@ -1,13 +1,13 @@
-package com.faheem.currencyconverstion.ui
+package com.faheem.currencyconverstion.ui.screens.currencies
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.faheem.currencyconverstion.domain.models.Currency
-import com.faheem.currencyconverstion.domain.models.ExchangeRate
-import com.faheem.currencyconverstion.domain.models.Rate
-import com.faheem.currencyconverstion.domain.repository.CurrenciesRepository
+import com.faheem.currencyconverstion.data.models.Currency
+import com.faheem.currencyconverstion.data.models.ExchangeRate
+import com.faheem.currencyconverstion.data.models.Rate
+import com.faheem.currencyconverstion.data.repositories.CurrenciesRepository
 import com.faheem.currencyconverstion.ui.utils.roundUpTo3Decimal
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

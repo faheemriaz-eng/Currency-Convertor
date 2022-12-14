@@ -1,4 +1,4 @@
-package com.faheem.currencyconverstion.ui
+package com.faheem.currencyconverstion.ui.screens.currencies
 
 sealed class CurrencyExchangeUIState {
     object Loading : CurrencyExchangeUIState()

@@ -1,4 +1,4 @@
-package com.faheem.currencyconverstion.ui
+package com.faheem.currencyconverstion.ui.screens.currencies
 
 import android.os.Bundle
 import android.view.View
@@ -13,12 +13,12 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import com.faheem.currencyconverstion.data.models.Currency
+import com.faheem.currencyconverstion.data.models.Rate
 import com.faheem.currencyconverstion.databinding.ActivityExchangeRatesBinding
-import com.faheem.currencyconverstion.domain.models.Currency
-import com.faheem.currencyconverstion.domain.models.Rate
-import com.faheem.currencyconverstion.domain.workmanager.ExchangeRatesWorker
-import com.faheem.currencyconverstion.ui.adapter.RatesAdapter
+import com.faheem.currencyconverstion.ui.screens.currencies.adapter.RatesAdapter
 import com.faheem.currencyconverstion.ui.utils.observe
+import com.faheem.currencyconverstion.ui.workmanager.ExchangeRatesWorker
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject

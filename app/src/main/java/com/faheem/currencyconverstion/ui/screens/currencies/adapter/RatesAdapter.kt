@@ -1,11 +1,11 @@
-package com.faheem.currencyconverstion.ui.adapter
+package com.faheem.currencyconverstion.ui.screens.currencies.adapter
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.faheem.currencyconverstion.data.models.Rate
 import com.faheem.currencyconverstion.databinding.LayoutItemExchangeRateBinding
-import com.faheem.currencyconverstion.domain.models.Rate
 import javax.inject.Inject
 
 class RatesAdapter @Inject constructor() : RecyclerView.Adapter<RatesViewHolder>() {

@@ -4,8 +4,8 @@ import com.faheem.currencyconverstion.data.local.CurrenciesLocalDataSource
 import com.faheem.currencyconverstion.data.local.CurrenciesLocalDataSourceImpl
 import com.faheem.currencyconverstion.data.remote.CurrenciesRemoteDataSource
 import com.faheem.currencyconverstion.data.remote.CurrencyConversionImpl
-import com.faheem.currencyconverstion.domain.repository.CurrenciesRepository
-import com.faheem.currencyconverstion.domain.repository.CurrenciesRepositoryImpl
+import com.faheem.currencyconverstion.data.repositories.CurrenciesRepository
+import com.faheem.currencyconverstion.data.repositories.CurrenciesRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

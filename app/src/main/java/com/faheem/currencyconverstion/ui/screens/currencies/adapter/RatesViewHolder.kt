@@ -1,8 +1,8 @@
-package com.faheem.currencyconverstion.ui.adapter
+package com.faheem.currencyconverstion.ui.screens.currencies.adapter
 
 import androidx.recyclerview.widget.RecyclerView
+import com.faheem.currencyconverstion.data.models.Rate
 import com.faheem.currencyconverstion.databinding.LayoutItemExchangeRateBinding
-import com.faheem.currencyconverstion.domain.models.Rate
 
 class RatesViewHolder(private val itemBinding: LayoutItemExchangeRateBinding) :
     RecyclerView.ViewHolder(itemBinding.root) {

@@ -1,8 +1,8 @@
 package com.faheem.currencyconverstion.di
 
 import com.faheem.currencyconverstion.BuildConfig
-import com.faheem.currencyconverstion.data.client.ApiClient
 import com.faheem.currencyconverstion.data.remote.CurrencyConversionService
+import com.faheem.currencyconverstion.data.remote.client.ApiClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
